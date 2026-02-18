@@ -13,4 +13,8 @@ export class User {
       password: this.password,
     };
   }
+
+  getPasswordHash() {
+    return this.password;
+  }
 }

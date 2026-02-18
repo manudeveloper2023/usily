@@ -8,12 +8,14 @@ import {
   Param,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { CreateUserCommand } from 'src/application/commands/create-user-command';
 import { AllUsersUseCase } from 'src/application/use-cases/all-users-use-case';
 import { CreateUserUseCase } from 'src/application/use-cases/create-user-use-case';
 import { DeleteUserUseCase } from 'src/application/use-cases/delete-user-use-case';
+import { Logger } from '../decorators/logger.decorator';
 
 @Controller('users')
 export class UserController {
@@ -44,6 +46,7 @@ export class UserController {
 
   @Get()
   @HttpCode(200)
+  @Logger()
   async findAll(@Res() res: Response) {
     const users = await this.allUsersUseCase.execute();
 
