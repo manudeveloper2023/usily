@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from '../controllers/auth.controller';
 import { RegisterUserUseCase } from 'src/application/use-cases/register-user-use-case';
-import { UserRepositoryModule } from 'src/infrastructure/repositories/postgresql-user.repository';
+import { UserRepositoryModule } from 'src/infrastructure/modules/user.repository.module';
 import { LoginUserUseCase } from 'src/application/use-cases/login-user-use-case';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';

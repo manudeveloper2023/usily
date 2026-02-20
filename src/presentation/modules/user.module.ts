@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CreateUserUseCase } from 'src/application/use-cases/create-user-use-case';
-import { UserRepositoryModule } from 'src/infrastructure/repositories/postgresql-user.repository';
+import { UserRepositoryModule } from 'src/infrastructure/modules/user.repository.module';
 import { UserController } from '../controllers/user.controller';
 import { DeleteUserUseCase } from 'src/application/use-cases/delete-user-use-case';
 import { AllUsersUseCase } from 'src/application/use-cases/all-users-use-case';

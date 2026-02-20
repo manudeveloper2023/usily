@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,11 +9,15 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { TOKENS } from 'src/infrastructure/constants/tokens';
+import type { RoleRepository } from 'src/domain/interfaces/role.repository';
 
 @Injectable()
 export class AuthJwtGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
+    @Inject(TOKENS.ROLE_REPOSITORY)
+    private roleRepository: RoleRepository,
     private reflector: Reflector,
   ) {}
 
@@ -35,8 +40,11 @@ export class AuthJwtGuard implements CanActivate {
     try {
       const payload = await this.jwtService.verifyAsync(token);
       request['subject'] = payload.subject;
-    } catch {
-      throw new UnauthorizedException();
+      request['roles'] = await this.roleRepository.findRolesByEmail(
+        payload.email,
+      );
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
     }
     return true;
   }
