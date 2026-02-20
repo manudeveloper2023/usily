@@ -2,8 +2,6 @@ import { Injectable, Module } from '@nestjs/common';
 import { User } from 'src/domain/entities/user';
 import { UserRepository } from 'src/domain/interfaces/user.repository';
 import { PrismaService } from '../prisma/prisma.service';
-import { PrismaModule } from '../prisma/prisma.module';
-import { TOKENS } from '../constants/tokens';
 
 @Injectable()
 export class PostgresqlUserRepository implements UserRepository {
@@ -54,12 +52,3 @@ export class PostgresqlUserRepository implements UserRepository {
     );
   }
 }
-
-@Module({
-  imports: [PrismaModule],
-  providers: [
-    { provide: TOKENS.USER_REPOSITORY, useClass: PostgresqlUserRepository },
-  ],
-  exports: [TOKENS.USER_REPOSITORY],
-})
-export class UserRepositoryModule {}
