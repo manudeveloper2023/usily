@@ -2,20 +2,24 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Inject,
   Param,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { CreateUserCommand } from 'src/application/commands/create-user-command';
 import { AllUsersUseCase } from 'src/application/use-cases/all-users-use-case';
 import { CreateUserUseCase } from 'src/application/use-cases/create-user-use-case';
 import { DeleteUserUseCase } from 'src/application/use-cases/delete-user-use-case';
 import { Logger } from '../decorators/logger.decorator';
+import { Roles } from '../decorators/role.decorator';
+import { RoleType } from 'src/domain/entities/role';
 
 @Controller('users')
 export class UserController {
@@ -36,12 +40,16 @@ export class UserController {
   }
 
   @Delete(':id')
+  @Roles(RoleType.ADMIN)
   @HttpCode(204)
-  async delete(@Param('id') id: string, @Res() res: Response) {
+  async delete(@Param('id') id: string, @Req() req: Request) {
+    console.log('User ID from token:', req['userId']);
+    console.log('User ID to delete:', id);
+    if (req['userId'] === Number(id)) {
+      throw new ForbiddenException('You cannot delete your own account');
+    }
+
     await this.deleteUserUseCase.execute(id);
-    return res.status(204).json({
-      message: 'User deleted successfully',
-    });
   }
 
   @Get()

@@ -11,7 +11,7 @@ export class PostgresqlRoleRepository implements RoleRepository {
       where: {
         users: {
           some: {
-            email,
+            email: email,
           },
         },
       },

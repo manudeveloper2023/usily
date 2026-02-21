@@ -30,8 +30,8 @@ export class LoginUserUseCase {
     }
 
     const payload = {
+      userId: user.id,
       subject: user.email,
-      username: user.name,
     };
 
     const token = await this.jwtService.signAsync(payload);
