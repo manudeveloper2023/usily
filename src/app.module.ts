@@ -6,6 +6,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthJwtGuard } from './presentation/guards/auth-jwt.guard';
 import { LoggerInterceptor } from './presentation/interceptors/logger.interceptor';
 import { RoleModule } from './presentation/modules/role.module';
+import { RoleGuard } from './presentation/guards/role.guard';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RoleModule } from './presentation/modules/role.module';
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthJwtGuard },
+    { provide: APP_GUARD, useClass: RoleGuard },
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggerInterceptor,
