@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TOKENS } from 'src/infrastructure/constants/tokens';
 import { AddRoleToUserCommand } from '../commands/add-role-to-user-command';
 import { UserResponseDTO } from 'src/presentation/responses/user.response';
@@ -16,13 +16,20 @@ export class UpdateRolesToUserUseCase {
     const { roleIds } = command;
     const roles = await this.roleRepository.findRolesByIds(roleIds);
 
-    if (roles.length === 0) {
-      throw new Error('No valid roles found for the provided role IDs.');
+    const foundRoleIds = new Set(roles.map((role) => role.id));
+    const missingRoles = roleIds.filter(
+      (id) => !foundRoleIds.has(id.toString()),
+    );
+
+    if (missingRoles.length > 0) {
+      throw new NotFoundException(
+        `Roles with IDs ${missingRoles.join(', ')} not found.`,
+      );
     }
 
     const user = await this.userRepository.findById(command.userId);
     if (!user) {
-      throw new Error('User not found.');
+      throw new NotFoundException('User not found.');
     }
 
     user.updateRoles(roleIds);

@@ -74,7 +74,6 @@ export class UserController {
     });
   }
 
-  @Public()
   @Post(':id/roles')
   async addRolesToUser(
     @Param('id') userId: string,

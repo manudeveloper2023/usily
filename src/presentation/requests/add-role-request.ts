@@ -1,6 +1,9 @@
-import { IsNotEmpty } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsInt, IsPositive } from 'class-validator';
 
 export class AddUserRoleRequestDTO {
-  @IsNotEmpty()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
   roleIds: number[];
 }
