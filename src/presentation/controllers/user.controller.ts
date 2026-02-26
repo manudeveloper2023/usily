@@ -23,7 +23,6 @@ import { RoleType } from 'src/domain/entities/role';
 import { AddUserRoleRequestDTO } from '../requests/add-role-request';
 import { AddRoleToUserCommand } from 'src/application/commands/add-role-to-user-command';
 import { UpdateRolesToUserUseCase } from 'src/application/use-cases/update-roles-to-user-use-case';
-import { Public } from '../decorators/public.decorator';
 
 @Controller('users')
 export class UserController {
@@ -48,8 +47,6 @@ export class UserController {
   @Roles(RoleType.ADMIN)
   @HttpCode(204)
   async delete(@Param('id') id: string, @Req() req: Request) {
-    console.log('User ID from token:', req['userId']);
-    console.log('User ID to delete:', id);
     if (req['userId'] === Number(id)) {
       throw new ForbiddenException('You cannot delete your own account');
     }
@@ -78,9 +75,12 @@ export class UserController {
   async addRolesToUser(
     @Param('id') userId: string,
     @Body() request: AddUserRoleRequestDTO,
+    @Req() req: Request,
   ) {
     const { roleIds } = request;
-    const command = new AddRoleToUserCommand(userId, roleIds);
+    const performedBy = req['subject'];
+    const command = new AddRoleToUserCommand(userId, roleIds, performedBy);
+
     return await this.updateRolesToUserUseCase.execute(command);
   }
 }
