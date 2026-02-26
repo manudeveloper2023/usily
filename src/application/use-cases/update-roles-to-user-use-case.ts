@@ -24,6 +24,11 @@ export class UpdateRolesToUserUseCase {
   ) {}
 
   async execute(command: AddRoleToUserCommand): Promise<UserResponseDTO> {
+    const user = await this.userRepository.findById(command.userId);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
     const { roleIds } = command;
     const performedBy = command.performedBy;
 
@@ -52,11 +57,6 @@ export class UpdateRolesToUserUseCase {
       throw new ForbiddenException(
         'You do not have permission to assign these roles.',
       );
-    }
-
-    const user = await this.userRepository.findById(command.userId);
-    if (!user) {
-      throw new NotFoundException('User not found.');
     }
 
     user.updateRoles(roleIds);
