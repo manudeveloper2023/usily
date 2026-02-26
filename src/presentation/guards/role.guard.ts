@@ -6,8 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
-import { ROLE_KEY, Roles } from '../decorators/role.decorator';
+import { ROLE_KEY } from '../decorators/role.decorator';
 import { TOKENS } from 'src/infrastructure/constants/tokens';
 import type { RoleRepository } from 'src/domain/interfaces/role.repository';
 import { RoleType } from 'src/domain/entities/role';
