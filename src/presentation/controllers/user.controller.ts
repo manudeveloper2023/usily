@@ -20,6 +20,10 @@ import { DeleteUserUseCase } from 'src/application/use-cases/delete-user-use-cas
 import { Logger } from '../decorators/logger.decorator';
 import { Roles } from '../decorators/role.decorator';
 import { RoleType } from 'src/domain/entities/role';
+import { AddUserRoleRequestDTO } from '../requests/add-role-request';
+import { AddRoleToUserCommand } from 'src/application/commands/add-role-to-user-command';
+import { UpdateRolesToUserUseCase } from 'src/application/use-cases/update-roles-to-user-use-case';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +31,7 @@ export class UserController {
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly allUsersUseCase: AllUsersUseCase,
+    private readonly updateRolesToUserUseCase: UpdateRolesToUserUseCase,
   ) {}
 
   @Post()
@@ -67,5 +72,16 @@ export class UserController {
       message: 'Users retrieved successfully',
       users,
     });
+  }
+
+  @Public()
+  @Post(':id/roles')
+  async addRolesToUser(
+    @Param('id') userId: string,
+    @Body() request: AddUserRoleRequestDTO,
+  ) {
+    const { roleIds } = request;
+    const command = new AddRoleToUserCommand(userId, roleIds);
+    return await this.updateRolesToUserUseCase.execute(command);
   }
 }

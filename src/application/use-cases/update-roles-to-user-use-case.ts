@@ -1,0 +1,38 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { TOKENS } from 'src/infrastructure/constants/tokens';
+import { AddRoleToUserCommand } from '../commands/add-role-to-user-command';
+import { UserResponseDTO } from 'src/presentation/responses/user.response';
+import type { UserRepository } from 'src/domain/interfaces/user.repository';
+import type { RoleRepository } from 'src/domain/interfaces/role.repository';
+
+@Injectable()
+export class UpdateRolesToUserUseCase {
+  constructor(
+    @Inject(TOKENS.USER_REPOSITORY) private userRepository: UserRepository,
+    @Inject(TOKENS.ROLE_REPOSITORY) private roleRepository: RoleRepository,
+  ) {}
+
+  async execute(command: AddRoleToUserCommand): Promise<UserResponseDTO> {
+    const { roleIds } = command;
+    const roles = await this.roleRepository.findRolesByIds(roleIds);
+
+    if (roles.length === 0) {
+      throw new Error('No valid roles found for the provided role IDs.');
+    }
+
+    const user = await this.userRepository.findById(command.userId);
+    if (!user) {
+      throw new Error('User not found.');
+    }
+
+    user.updateRoles(roleIds);
+
+    const updatedUser = await this.userRepository.update(user);
+
+    return new UserResponseDTO(
+      updatedUser.name,
+      updatedUser.email,
+      updatedUser.id,
+    );
+  }
+}

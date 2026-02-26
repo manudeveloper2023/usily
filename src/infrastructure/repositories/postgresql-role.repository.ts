@@ -6,6 +6,19 @@ import { Role } from 'src/domain/entities/role';
 @Injectable()
 export class PostgresqlRoleRepository implements RoleRepository {
   constructor(private readonly prisma: PrismaService) {}
+  async findRolesByIds(roleIds: number[]): Promise<Role[]> {
+    return this.prisma.role
+      .findMany({
+        where: {
+          id: {
+            in: roleIds,
+          },
+        },
+      })
+      .then((roles) =>
+        roles.map((role) => new Role(role.id.toString(), role.name)),
+      );
+  }
   async findRolesByEmail(email: string): Promise<Role[]> {
     const roles = await this.prisma.role.findMany({
       where: {

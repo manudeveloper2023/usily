@@ -4,11 +4,23 @@ import { UserRepositoryModule } from 'src/infrastructure/modules/user.repository
 import { UserController } from '../controllers/user.controller';
 import { DeleteUserUseCase } from 'src/application/use-cases/delete-user-use-case';
 import { AllUsersUseCase } from 'src/application/use-cases/all-users-use-case';
+import { UpdateRolesToUserUseCase } from 'src/application/use-cases/update-roles-to-user-use-case';
+import { RoleRepositoryModule } from 'src/infrastructure/modules/role.repository.module';
 
 @Module({
-  imports: [UserRepositoryModule],
+  imports: [UserRepositoryModule, RoleRepositoryModule],
   controllers: [UserController],
-  providers: [CreateUserUseCase, DeleteUserUseCase, AllUsersUseCase],
-  exports: [CreateUserUseCase, DeleteUserUseCase, AllUsersUseCase],
+  providers: [
+    CreateUserUseCase,
+    DeleteUserUseCase,
+    AllUsersUseCase,
+    UpdateRolesToUserUseCase,
+  ],
+  exports: [
+    CreateUserUseCase,
+    DeleteUserUseCase,
+    AllUsersUseCase,
+    UpdateRolesToUserUseCase,
+  ],
 })
 export class UserModule {}

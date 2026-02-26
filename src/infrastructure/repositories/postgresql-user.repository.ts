@@ -27,10 +27,36 @@ export class PostgresqlUserRepository implements UserRepository {
   }
   async store(user: User): Promise<User> {
     const data = user.toPersistence();
+    const roleIds = data.roleIds ?? [];
     const newUser = await this.prisma.user.create({
-      data,
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        roles: {
+          connect: roleIds.map((roleId) => ({ id: roleId })),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+        roles: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
-    return new User(newUser.name, newUser.email, newUser.password, newUser.id);
+
+    return new User(
+      newUser.name,
+      newUser.email,
+      newUser.password,
+      newUser.id,
+      newUser.roles.map((role) => role.id),
+    );
   }
 
   async findById(id: string): Promise<User | null> {
@@ -49,6 +75,43 @@ export class PostgresqlUserRepository implements UserRepository {
     const user = await this.prisma.user.findMany();
     return user.map(
       (user) => new User(user.name, user.email, user.password, user.id),
+    );
+  }
+
+  async update(user: User): Promise<User> {
+    const data = user.toPersistence();
+    const roleIds = data.roleIds ?? [];
+    const updatedUser = await this.prisma.user.update({
+      where: {
+        id: Number(user.id),
+      },
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        roles: {
+          set: roleIds.map((roleId) => ({ id: roleId })),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+        roles: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    return new User(
+      updatedUser.name,
+      updatedUser.email,
+      updatedUser.password,
+      updatedUser.id,
+      updatedUser.roles.map((role) => role.id),
     );
   }
 }
