@@ -12,10 +12,10 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(command: CreateUserCommand): Promise<UserResponseDTO> {
-    const { email, name, password } = command;
+    const { email, name, password, roleIds } = command;
     const hashPassword = await bcrypt.hash(password, 10);
     const newUser = await this.userRepository.store(
-      new User(name, email, hashPassword),
+      new User(name, email, hashPassword, undefined, roleIds),
     );
     return new UserResponseDTO(newUser.name, newUser.email, newUser.id);
   }

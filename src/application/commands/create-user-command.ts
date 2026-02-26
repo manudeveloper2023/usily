@@ -9,4 +9,7 @@ export class CreateUserCommand {
 
   @IsNotEmpty()
   password: string;
+
+  @IsNotEmpty()
+  roleIds: number[];
 }
