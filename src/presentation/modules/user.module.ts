@@ -4,7 +4,7 @@ import { UserRepositoryModule } from 'src/infrastructure/modules/user.repository
 import { UserController } from '../controllers/user.controller';
 import { DeleteUserUseCase } from 'src/application/use-cases/delete-user-use-case';
 import { AllUsersUseCase } from 'src/application/use-cases/all-users-use-case';
-import { AddRoleToUserUseCase } from 'src/application/use-cases/update-roles-to-user-use-case';
+import { UpdateRolesToUserUseCase } from 'src/application/use-cases/update-roles-to-user-use-case';
 import { RoleRepositoryModule } from 'src/infrastructure/modules/role.repository.module';
 
 @Module({
@@ -14,13 +14,13 @@ import { RoleRepositoryModule } from 'src/infrastructure/modules/role.repository
     CreateUserUseCase,
     DeleteUserUseCase,
     AllUsersUseCase,
-    AddRoleToUserUseCase,
+    UpdateRolesToUserUseCase,
   ],
   exports: [
     CreateUserUseCase,
     DeleteUserUseCase,
     AllUsersUseCase,
-    AddRoleToUserUseCase,
+    UpdateRolesToUserUseCase,
   ],
 })
 export class UserModule {}
