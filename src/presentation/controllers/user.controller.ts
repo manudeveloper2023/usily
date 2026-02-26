@@ -72,6 +72,7 @@ export class UserController {
   }
 
   @Post(':id/roles')
+  @Roles(RoleType.ADMIN)
   async addRolesToUser(
     @Param('id') userId: string,
     @Body() request: AddUserRoleRequestDTO,
